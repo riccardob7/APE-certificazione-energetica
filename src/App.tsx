@@ -48,12 +48,12 @@ function App() {
       <section className="relative bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 text-white py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            Certificazione energetica per la tua casa o per la tua attività
+            Certificazione energetica APE per la tua casa o per la tua attività
           </h1>
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-3xl">
             <p className="text-lg md:text-xl leading-relaxed">
-              L'Attestato di Prestazione Energetica (APE) è obbligatorio per la vendita o la locazione di ogni immobile.
-              Permette di conoscere la classe energetica e i consumi stimati della tua abitazione o del tuo locale, con valutazione eseguita da ingegnere abilitato e iscrizione nel catasto energetico regionale (SIAPE).
+              L'Attestato di Prestazione Energetica (APE) è il documento obbligatorio per la vendita o la locazione degli immobili.
+              Fornisce una valutazione della classe energetica e dei consumi stimati, attraverso un'analisi tecnica basata su un sopralluogo reale dell'immobile. Il servizio è svolto direttamente da un <strong>ingegnere abilitato</strong>.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
