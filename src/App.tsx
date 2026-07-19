@@ -1,303 +1,423 @@
-import { Phone, CheckCircle, FileText, Home, MessageCircle, ClipboardList } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  ArrowRight,
+  BadgeCheck,
+  Building2,
+  Check,
+  ChevronDown,
+  ClipboardCheck,
+  FileCheck2,
+  FileText,
+  Home,
+  KeyRound,
+  Leaf,
+  Lightbulb,
+  MapPin,
+  Menu,
+  MessageCircle,
+  Phone,
+  SearchCheck,
+  ShieldCheck,
+  Sparkles,
+  X,
+} from 'lucide-react';
+import InternalPage from './InternalPage';
+import { contact, locations } from './siteData';
 
-function App() {
-  const comuni = [
-    ['Colleferro', 'Palestrina', 'Valmontone'],
-    ['Artena', 'Labico', 'Lariano'],
-    ['Cave', 'Zagarolo', 'Genazzano'],
-    ['Segni', 'Gavignano', 'Paliano'],
-    ['Olevano Romano', 'Anagni', 'San Cesareo']
-  ];
+const PHONE_DISPLAY = contact.phoneDisplay;
+const PHONE_LINK = contact.phoneLink;
+const WHATSAPP_LINK = contact.whatsapp;
+const MAPS_LINK = contact.maps;
 
-  const fasi = [
-    {
-      numero: '1',
-      titolo: 'Contatto e accordo per il sopralluogo',
-      descrizione: 'Chiamando o scrivendo su WhatsApp si concorda data e orario del sopralluogo. Viene fornita subito una stima dei tempi e del costo in base al tipo di immobile.'
-    },
-    {
-      numero: '2',
-      titolo: 'Raccolta dei documenti',
-      descrizione: 'È necessario fornire i documenti indicati (planimetria, dati catastali, libretto impianto, ecc.). Se alcuni dati non sono disponibili, viene offerto supporto nel reperimento delle informazioni mancanti.'
-    },
-    {
-      numero: '3',
-      titolo: 'Sopralluogo tecnico',
-      descrizione: 'L\'ingegnere effettua la visita diretta dell\'immobile, verifica materiali, infissi, impianti e orientamento, e rileva tutte le misure necessarie per la certificazione.'
-    },
-    {
-      numero: '4',
-      titolo: 'Elaborazione e rilascio dell\'APE',
-      descrizione: 'Entro pochi giorni si riceve l\'Attestato di Prestazione Energetica completo, in formato digitale e cartaceo, con registrazione ufficiale nel catasto energetico regionale (SIAPE).'
-    }
-  ];
+const benefits = [
+  {
+    icon: BadgeCheck,
+    title: 'Competenza tecnica',
+    text: "Il servizio è svolto direttamente da un ingegnere abilitato, con attenzione alla correttezza dei dati e dell'intera pratica.",
+  },
+  {
+    icon: SearchCheck,
+    title: 'Sopralluogo reale',
+    text: "Il sopralluogo permette di rilevare i dati necessari alla modellazione energetica dell'edificio e alla redazione dell'attestato.",
+  },
+  {
+    icon: FileCheck2,
+    title: 'Pratica seguita con cura',
+    text: 'Indicazioni chiare sui documenti, assistenza durante il percorso e consegna della certificazione completata.',
+  },
+];
 
+const steps = [
+  ['01', 'Primo contatto', "Indica il comune, il tipo di immobile e il motivo della richiesta."],
+  ['02', 'Raccolta documenti', 'Ricevi le indicazioni sui dati e sui documenti utili per avviare la pratica.'],
+  ['03', 'Sopralluogo tecnico', "L'ingegnere rileva le caratteristiche dell'immobile, degli impianti e dell'involucro edilizio."],
+  ['04', 'Modellazione e rilascio', "I dati rilevati vengono utilizzati per la modellazione energetica dell'edificio e per predisporre l'Attestato di Prestazione Energetica."],
+];
+
+const documents = [
+  'Planimetria catastale',
+  "Dati catastali e indirizzo completo dell'immobile",
+  "Documento d'identità del proprietario o delegato",
+  'Libretto di impianto termico, se presente',
+];
+
+const useCases = [
+  { icon: KeyRound, title: 'Compravendita', text: "Per la documentazione richiesta nell'atto di vendita." },
+  { icon: Home, title: 'Locazione', text: "Per stipulare un nuovo contratto d'affitto nei casi previsti." },
+  { icon: Building2, title: 'Annunci immobiliari', text: 'Per riportare classe e prestazione energetica negli annunci.' },
+  { icon: ClipboardCheck, title: 'Altri adempimenti', text: 'Per verificare la necessità dell’APE nella propria situazione.' },
+];
+
+const faqs = [
+  {
+    question: "Cos'è l'Attestato di Prestazione Energetica?",
+    answer:
+      "L'APE è il documento che descrive le caratteristiche energetiche di un immobile e ne indica la classe energetica sulla base dei dati rilevati e calcolati.",
+  },
+  {
+    question: 'Il sopralluogo è necessario?',
+    answer:
+      "Sì. Il servizio proposto prevede il sopralluogo diretto dell'ingegnere per verificare le caratteristiche dell'immobile e raccogliere i dati necessari.",
+  },
+  {
+    question: 'Quali informazioni servono per richiedere un preventivo?',
+    answer:
+      "È utile indicare il comune, la tipologia e la dimensione indicativa dell'immobile, oltre al motivo della certificazione, ad esempio vendita o locazione.",
+  },
+  {
+    question: 'Cosa succede se manca un documento?',
+    answer:
+      'Contatta il tecnico e indica quali documenti sono disponibili: riceverai le istruzioni per verificare come procedere nella situazione specifica.',
+  },
+  {
+    question: 'Il servizio è disponibile anche fuori dai comuni elencati?',
+    answer:
+      'Per località limitrofe è possibile verificare la disponibilità direttamente tramite telefono o WhatsApp.',
+  },
+];
+
+function ContactButtons({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="fixed bottom-6 right-6 z-50 md:hidden">
-        <a
-          href="https://wa.me/393384146548"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-110"
-        >
-          <MessageCircle size={28} />
-        </a>
-      </div>
-
-      <section className="relative bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 text-white py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            Certificazione energetica APE per la tua casa o per la tua attività
-          </h1>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-3xl">
-            <p className="text-lg md:text-xl leading-relaxed">
-              L'Attestato di Prestazione Energetica (APE) è il documento obbligatorio per la vendita o la locazione degli immobili.
-              Fornisce una valutazione della classe energetica e dei consumi stimati, attraverso un'analisi tecnica basata su un sopralluogo reale dell'immobile. Il servizio è svolto direttamente da un <strong>ingegnere abilitato</strong>.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a
-              href="tel:+393384146548"
-              className="inline-flex items-center justify-center gap-2 bg-white text-teal-700 font-semibold px-8 py-4 rounded-lg hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg"
-            >
-              <Phone size={20} />
-              Chiama
-            </a>
-            <a
-              href="https://wa.me/393384146548"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-teal-800 text-white font-semibold px-8 py-4 rounded-lg hover:bg-teal-900 transition-all duration-300 hover:scale-105 shadow-lg border-2 border-white/30"
-            >
-              <MessageCircle size={20} />
-              Richiedi un APE
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center">
-            Professionalità e precisione
-          </h2>
-          <p className="text-xl text-gray-600 mb-12 text-center max-w-3xl mx-auto">
-            Tre motivi per scegliere un servizio tecnico serio e conforme alla normativa:
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mb-4">
-                <CheckCircle className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                Ingegnere abilitato
-              </h3>
-              <p className="text-gray-700 leading-relaxed">
-                Servizio svolto da professionista iscritto all'Albo, esperto in efficienza energetica e aggiornato sulle norme UNI e linee guida nazionali.
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-cyan-50 to-blue-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 bg-cyan-600 rounded-full flex items-center justify-center mb-4">
-                <Home className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                Sopralluogo reale
-              </h3>
-              <p className="text-gray-700 leading-relaxed">
-                Ogni APE viene redatto dopo un sopralluogo in presenza presso l'immobile.
-                Nessun APE online o automatizzato: solo verifiche reali e dati certi.
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
-              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center mb-4">
-                <FileText className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                Documentazione completa
-              </h3>
-              <p className="text-gray-700 leading-relaxed">
-                Consegna digitale e cartacea, con registrazione ufficiale nel SIAPE e documenti pronti per notaio, agenzia o annuncio immobiliare.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-center">
-            Quando è obbligatorio l'APE
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-emerald-500">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Compravendita</h3>
-              <p className="text-gray-700">Obbligatorio da allegare all'atto notarile.</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-teal-500">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Locazione</h3>
-              <p className="text-gray-700">Necessario per ogni contratto d'affitto.</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-cyan-500">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Annunci immobiliari</h3>
-              <p className="text-gray-700">Obbligo di indicare classe ed indice energetico.</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-emerald-500">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">Donazioni</h3>
-              <p className="text-gray-700">Richiesto dalla normativa vigente (non successioni).</p>
-            </div>
-          </div>
-
-          <div className="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-lg max-w-3xl mx-auto text-center">
-            <p className="text-gray-800 font-semibold text-lg">
-              Senza APE non puoi vendere, affittare o pubblicare annunci immobiliari.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-center">
-            Documenti necessari
-          </h2>
-
-          <p className="text-xl text-gray-600 mb-8 text-center">
-            Per avviare la pratica, bastano pochi documenti:
-          </p>
-
-          <ul className="space-y-4">
-            {[
-              'Libretto impianto termico (se presente)',
-              'Dati catastali e indirizzo completo dell\'immobile',
-              'Planimetria catastale',
-              'Documento d\'identità del proprietario o delegato'
-            ].map((doc, index) => (
-              <li key={index} className="flex items-start gap-3 bg-gray-50 p-4 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                <CheckCircle className="text-emerald-500 flex-shrink-0 mt-1" size={20} />
-                <span className="text-gray-700 text-lg">{doc}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-gradient-to-br from-teal-50 to-cyan-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center">
-            Comuni serviti
-          </h2>
-          <p className="text-lg text-gray-600 mb-12 text-center">
-            Servizio di redazione APE disponibile nei seguenti comuni:
-          </p>
-
-          <div className="bg-white rounded-xl shadow-sm p-8 max-w-4xl mx-auto">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <tbody>
-                  {comuni.map((row, rowIndex) => (
-                    <tr key={rowIndex} className="border-b border-gray-200 last:border-0">
-                      {row.map((comune, colIndex) => (
-                        <td key={colIndex} className="py-4 px-4 text-gray-700 text-center font-medium">
-                          {comune}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="text-sm text-gray-600 mt-6 italic text-center">
-              Servizio rapido con sopralluogo entro pochi giorni in tutti i comuni elencati.
-            </p>
-            <p className="text-sm text-gray-700 mt-4 text-center font-medium">
-              Per comuni limitrofi alla zona non indicati nella tabella, il servizio di certificazione è comunque disponibile. Contattaci per maggiori informazioni.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center">
-            Come si svolge la redazione dell'APE
-          </h2>
-          <p className="text-xl text-gray-600 mb-12 text-center max-w-3xl mx-auto">
-            Il servizio è semplice, trasparente e sempre seguito da un ingegnere abilitato in tutte le fasi:
-          </p>
-
-          <div className="space-y-6 max-w-4xl mx-auto">
-            {fasi.map((fase) => (
-              <div key={fase.numero} className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6 hover:shadow-md transition-shadow duration-300 border-l-4 border-teal-500">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-xl">
-                    {fase.numero}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
-                      {fase.titolo}
-                    </h3>
-                    <p className="text-gray-700 leading-relaxed">
-                      {fase.descrizione}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8">
-            Contatti
-          </h2>
-
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 mb-6">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <Phone size={28} />
-              <a href="tel:+393384146548" className="text-2xl md:text-3xl font-bold hover:underline">
-                +39 338 4146548
-              </a>
-            </div>
-
-            <p className="text-lg leading-relaxed max-w-2xl mx-auto">
-              Scrivi su WhatsApp indicando l'indirizzo dell'immobile e il motivo della richiesta
-              (vendita, locazione o verifica volontaria).
-              Riceverai subito le informazioni sui tempi e sui costi.
-            </p>
-          </div>
-
-          <a
-            href="https://wa.me/393384146548"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 bg-white text-teal-700 font-semibold px-10 py-5 rounded-lg hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg text-lg"
-          >
-            <MessageCircle size={24} />
-            Scrivi su WhatsApp
-          </a>
-        </div>
-      </section>
-
-      <footer className="bg-gray-900 text-white text-center py-8 px-6">
-        <p className="text-sm md:text-base">
-          Attestati di Prestazione Energetica a cura di ingegnere abilitato.
-        </p>
-        <p className="text-sm md:text-base mt-2">
-          © 2025 – Tel. <a href="tel:+393384146548" className="hover:underline">+39 338 4146548</a>
-        </p>
-      </footer>
+    <div className={`contact-buttons${compact ? ' contact-buttons--compact' : ''}`}>
+      <a className="button button--primary" href={WHATSAPP_LINK} target="_blank" rel="noreferrer">
+        <MessageCircle aria-hidden="true" />
+        Richiedi un preventivo
+      </a>
+      <a className="button button--secondary" href={`tel:${PHONE_LINK}`}>
+        <Phone aria-hidden="true" />
+        Chiama ora
+      </a>
     </div>
   );
+}
+
+function HomePage() {
+  const [showTechnicalNotice, setShowTechnicalNotice] = useState(true);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className="site-shell">
+      <header className="site-header">
+        <div className="container header-inner">
+          <a className="brand brand--header" href="/" aria-label="apecertificazioni.com, torna all'inizio">
+            <img className="brand-symbol" src="/images/ape-symbol.png" alt="" aria-hidden="true" />
+            <span className="brand-copy">
+              <strong>apecertificazioni.com</strong>
+              <small>Servizio certificazione APE</small>
+            </span>
+          </a>
+
+          <nav className="desktop-nav" aria-label="Navigazione principale">
+            <a href="/certificazione-energetica-ape/">Il servizio</a>
+            <a href="/come-funziona/">Come funziona</a>
+            <a href="/zone-servite/">Zone servite</a>
+            <a href="/consulenza-energetica/">Consulenza</a>
+            <a href="/faq/">FAQ</a>
+          </nav>
+
+          <a className="header-phone" href={`tel:${PHONE_LINK}`}>
+            <Phone aria-hidden="true" />
+            <span>{PHONE_DISPLAY}</span>
+          </a>
+
+          <details className="mobile-menu">
+            <summary aria-label="Apri il menu"><Menu /></summary>
+            <nav aria-label="Navigazione mobile">
+              <a href="/certificazione-energetica-ape/">Il servizio</a>
+              <a href="/come-funziona/">Come funziona</a>
+              <a href="/documenti-necessari/">Documenti</a>
+              <a href="/quando-serve-ape/">Quando serve</a>
+              <a href="/zone-servite/">Zone servite</a>
+              <a href="/consulenza-energetica/">Consulenza energetica</a>
+              <a href="/faq/">FAQ</a>
+              <a href={`tel:${PHONE_LINK}`}>{PHONE_DISPLAY}</a>
+            </nav>
+          </details>
+        </div>
+      </header>
+
+      <main id="top">
+        <section className="hero" aria-labelledby="hero-title">
+          <div className="hero-image" aria-hidden="true" />
+          <div className="container hero-inner">
+            <div className="hero-copy">
+              <div className="eyebrow hero-eyebrow"><Sparkles /> Certificazione energetica APE</div>
+              <h1 id="hero-title">La certificazione energetica per la tua casa e la tua attività.</h1>
+              <p className="hero-lead">
+                Sopralluogo tecnico, modellazione energetica dell’edificio e predisposizione dell’APE per vendita, locazione e annunci immobiliari.
+              </p>
+              <ContactButtons />
+              <div className="hero-assurances" aria-label="Punti chiave del servizio">
+                <span><Check /> Ingegnere abilitato</span>
+                <span><Check /> Sopralluogo sul posto</span>
+                <span><Check /> Supporto sui documenti</span>
+              </div>
+            </div>
+          </div>
+          <div className="hero-scroll" aria-hidden="true"><span /> Scopri il servizio</div>
+        </section>
+
+        <section className="trust-strip" aria-label="Caratteristiche del servizio">
+          <div className="container trust-strip-inner">
+            <span><ShieldCheck /> Approccio professionale</span>
+            <span><MapPin /> Presenza sul territorio</span>
+            <span><MessageCircle /> Contatto diretto</span>
+          </div>
+        </section>
+
+        <section className="section" id="servizio">
+          <div className="container">
+            <div className="section-heading" data-reveal>
+              <span className="eyebrow">Un servizio tecnico, spiegato bene</span>
+              <h2>Più chiarezza, meno pensieri.</h2>
+              <p>Un percorso essenziale e trasparente, dalla prima richiesta fino alla certificazione.</p>
+            </div>
+            <div className="benefit-grid">
+              {benefits.map(({ icon: Icon, title, text }, index) => (
+                <article className="benefit-card" data-reveal style={{ '--delay': `${index * 90}ms` } as React.CSSProperties} key={title}>
+                  <span className="icon-tile"><Icon /></span>
+                  <span className="card-index">0{index + 1}</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--dark" id="come-funziona">
+          <div className="container process-layout">
+            <div className="process-intro" data-reveal>
+              <span className="eyebrow eyebrow--light">Come funziona</span>
+              <h2>Un percorso semplice, dall’immobile all’APE.</h2>
+              <p>Ogni fase ha uno scopo preciso: dal rilievo sul posto alla modellazione energetica necessaria per predisporre l’attestato.</p>
+              <a className="text-link" href={WHATSAPP_LINK} target="_blank" rel="noreferrer">
+                Inizia da WhatsApp <ArrowRight />
+              </a>
+            </div>
+            <ol className="steps">
+              {steps.map(([number, title, text]) => (
+                <li data-reveal key={number}>
+                  <span className="step-number">{number}</span>
+                  <div><h3>{title}</h3><p>{text}</p></div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section className="section documents-section">
+          <div className="container split-layout">
+            <div className="section-heading section-heading--left" data-reveal>
+              <span className="eyebrow">Preparare la pratica</span>
+              <h2>I documenti utili.</h2>
+              <p>Per iniziare, prepara ciò che hai già a disposizione. Se manca qualcosa, il tecnico ti indicherà come verificare la situazione.</p>
+              <a className="text-link text-link--dark" href={WHATSAPP_LINK} target="_blank" rel="noreferrer">Verifica i documenti <ArrowRight /></a>
+            </div>
+            <div className="document-panel" data-reveal>
+              {documents.map((document) => (
+                <div className="document-row" key={document}><span><Check /></span>{document}</div>
+              ))}
+              <p className="panel-note"><FileText /> L’elenco definitivo dipende dalle caratteristiche dell’immobile.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--soft">
+          <div className="container">
+            <div className="section-heading" data-reveal>
+              <span className="eyebrow">Quando serve</span>
+              <h2>L’APE nei momenti importanti dell’immobile.</h2>
+              <p>Verifica con il tecnico l’applicazione corretta alla tua situazione specifica.</p>
+            </div>
+            <div className="use-grid">
+              {useCases.map(({ icon: Icon, title, text }) => (
+                <article className="use-card" data-reveal key={title}>
+                  <Icon />
+                  <div><h3>{title}</h3><p>{text}</p></div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section locations-section" id="zone">
+          <div className="container locations-layout">
+            <div className="location-copy" data-reveal>
+              <span className="eyebrow eyebrow--light">Zone servite</span>
+              <h2>Dal territorio, per il territorio.</h2>
+              <p>Il servizio è disponibile in numerosi comuni tra la provincia di Roma e le aree limitrofe del Lazio.</p>
+              <div className="location-highlight"><MapPin /><span><strong>Area principale</strong>Valmontone, Colleferro, Palestrina e San Cesareo</span></div>
+              <a className="map-link" href={MAPS_LINK} target="_blank" rel="noreferrer" aria-label="Apri la sede su Google Maps">
+                <MapPin /> Apri su Google Maps <ArrowRight />
+              </a>
+            </div>
+            <div className="towns" data-reveal>
+              {locations.map((town) => <a className="town-link" href={`/zone-servite/${town.slug}/`} key={town.slug}>{town.name}</a>)}
+              <a className="towns-more" href={WHATSAPP_LINK} target="_blank" rel="noreferrer">Verifica un altro comune <ArrowRight /></a>
+            </div>
+          </div>
+        </section>
+
+        <section className="section engineer-section">
+          <div className="container engineer-card" data-reveal>
+            <div className="engineer-visual" aria-hidden="true">
+              <span className="technical-orbit technical-orbit--one" />
+              <span className="technical-orbit technical-orbit--two" />
+              <ShieldCheck />
+            </div>
+            <div className="engineer-copy">
+              <span className="eyebrow">Il professionista</span>
+              <h2>Un riferimento tecnico, dall’inizio alla consegna.</h2>
+              <p>
+                Il servizio viene svolto direttamente da un ingegnere abilitato. Un unico interlocutore segue il sopralluogo, la modellazione energetica dell’edificio e la predisposizione dell’attestato.
+              </p>
+              <ul>
+                <li><Check /> Contatto diretto con il tecnico</li>
+                <li><Check /> Indicazioni chiare per preparare la pratica</li>
+                <li><Check /> Attenzione alle caratteristiche reali dell’immobile</li>
+              </ul>
+              <p className="service-note">Il servizio resta seguito da un unico referente tecnico in tutte le fasi.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="section improvement-section" id="miglioramento">
+          <div className="container improvement-card" data-reveal>
+            <div className="improvement-copy">
+              <span className="eyebrow eyebrow--light">Consulenza energetica</span>
+              <h2>E se volessi migliorare la classe energetica?</h2>
+              <p>
+                La modellazione energetica può diventare un punto di partenza per comprendere il comportamento dell’edificio e valutare possibili interventi di miglioramento.
+              </p>
+              <ul>
+                <li><Leaf /> Analisi delle caratteristiche energetiche dell’immobile</li>
+                <li><Lightbulb /> Valutazione tecnica delle possibili soluzioni</li>
+                <li><FileCheck2 /> Indicazioni ordinate per orientare le scelte successive</li>
+              </ul>
+              <p className="improvement-disclaimer">La fattibilità e gli effetti degli interventi dipendono dalle caratteristiche del singolo immobile.</p>
+              <a className="button button--primary" href={WHATSAPP_LINK} target="_blank" rel="noreferrer">
+                <MessageCircle /> Richiedi informazioni sulla consulenza
+              </a>
+            </div>
+            <div className="improvement-visual" aria-hidden="true">
+              <div className="energy-scale">
+                {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((grade, index) => <span key={grade} style={{ '--grade': index } as React.CSSProperties}>{grade}</span>)}
+              </div>
+              <div className="energy-home"><Home /><span /></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section faq-section" id="faq">
+          <div className="container faq-layout">
+            <div className="section-heading section-heading--left" data-reveal>
+              <span className="eyebrow">Domande frequenti</span>
+              <h2>Le risposte per partire con chiarezza.</h2>
+              <p>Per dubbi legati a un immobile specifico, il modo più semplice è parlarne direttamente.</p>
+              <a className="button button--dark" href={`tel:${PHONE_LINK}`}><Phone /> Parla con il tecnico</a>
+            </div>
+            <div className="faq-list" data-reveal>
+              {faqs.map(({ question, answer }, index) => (
+                <details key={question} open={index === 0}>
+                  <summary>{question}<ChevronDown /></summary>
+                  <p>{answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="final-cta">
+          <div className="final-cta-glow" aria-hidden="true" />
+          <div className="container final-cta-inner" data-reveal>
+            <span className="eyebrow eyebrow--light">Richiedi informazioni</span>
+            <h2>Hai bisogno dell’APE per il tuo immobile?</h2>
+            <p>Indica il comune, il tipo di immobile e il motivo della richiesta. Riceverai le informazioni necessarie per valutare la pratica.</p>
+            <ContactButtons />
+            <span className="cta-phone-note">Oppure chiama il <a href={`tel:${PHONE_LINK}`}>{PHONE_DISPLAY}</a></span>
+          </div>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <div className="container footer-grid">
+          <div>
+            <a className="brand brand--image brand--footer" href="/"><img src="/images/ape-certificazioni-logo.webp" alt="APE Certificazioni" /></a>
+            <p>Certificazioni energetiche con sopralluogo diretto e modellazione energetica dell’edificio.</p>
+          </div>
+          <div><h2>Contatti</h2><a href={`tel:${PHONE_LINK}`}>{PHONE_DISPLAY}</a><a href={WHATSAPP_LINK} target="_blank" rel="noreferrer">WhatsApp</a><a href="/contatti/">Tutti i contatti</a></div>
+          <div><h2>Esplora</h2><a href="/certificazione-energetica-ape/">Il servizio</a><a href="/come-funziona/">Come funziona</a><a href="/documenti-necessari/">Documenti</a><a href="/quando-serve-ape/">Quando serve</a><a href="/consulenza-energetica/">Consulenza</a><a href="/zone-servite/">Zone servite</a><a href="/faq/">FAQ</a></div>
+          <div>
+            <h2>Dove operiamo</h2>
+            <a href={MAPS_LINK} target="_blank" rel="noreferrer">Apri su Google Maps</a>
+            <span className="footer-note">Il sito non utilizza cookie di profilazione o strumenti di tracciamento.</span>
+          </div>
+        </div>
+        <div className="container footer-bottom"><span>© {new Date().getFullYear()} APE Certificazioni</span><span>Certificazione e consulenza energetica</span></div>
+      </footer>
+
+      <div className="mobile-contact-bar" aria-label="Contatti rapidi">
+        <a href={`tel:${PHONE_LINK}`}><Phone /> Chiama</a>
+        <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer"><MessageCircle /> WhatsApp</a>
+      </div>
+
+      {showTechnicalNotice && (
+        <aside className="technical-notice" role="region" aria-label="Informazioni sui cookie">
+          <div className="technical-notice__icon" aria-hidden="true"><ShieldCheck /></div>
+          <div>
+            <strong>Nessun cookie di profilazione</strong>
+            <p>Questo sito non salva preferenze e non utilizza strumenti di tracciamento. I collegamenti a WhatsApp e Google Maps si aprono solo su tua richiesta.</p>
+          </div>
+          <button type="button" onClick={() => setShowTechnicalNotice(false)} aria-label="Chiudi l’avviso sui cookie">
+            <X />
+          </button>
+        </aside>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  const pathname = window.location.pathname;
+  return pathname === '/' || pathname === '/index.html' ? <HomePage /> : <InternalPage pathname={pathname} />;
 }
 
 export default App;
